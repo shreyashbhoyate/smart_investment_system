@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Portfolio Assistant - AI Investment Advisor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        /* Professional, Calm, Fresh Design - Zerodha/Vanguard Inspired */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #fafafa;
+            color: #424242;
+            line-height: 1.6;
+        }
+        
+        .navbar {
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.3em;
+            font-weight: 600;
+            color: #1976d2;
+        }
+        
+        .nav-links a {
+            margin-left: 32px;
+            text-decoration: none;
+            color: #616161;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a:hover {
+            color: #1976d2;
+        }
+        
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 24px 60px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.2em;
+            font-weight: 700;
+            color: #212121;
+            line-height: 1.2;
+            margin-bottom: 24px;
+            letter-spacing: -0.02em;
+        }
+        
+        .hero-content p {
+            font-size: 1.15em;
+            color: #616161;
+            line-height: 1.7;
+            margin-bottom: 48px;
+        }
+        
+        .features-list {
+            list-style: none;
+            margin-bottom: 40px;
+        }
+        
+        .features-list li {
+            padding: 16px 0;
+            border-bottom: 1px solid #f0f0f0;
+            font-size: 1em;
+            color: #424242;
+            display: flex;
+            align-items: center;
+        }
+        
+        .features-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .check-icon {
+            width: 20px;
+            height: 20px;
+            background: #4caf50;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 16px;
+            flex-shrink: 0;
+        }
+        
+        .check-icon::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .form-card {
+            background: white;
+            border-radius: 16px;
+            padding: 48px;
+            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+        }
+        
+        .form-card h2 {
+            font-size: 1.8em;
+            font-weight: 600;
+            color: #212121;
+            margin-bottom: 32px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            color: #424242;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            color: #212121;
+            background: white;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #1976d2;
+            background: #fafafa;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: #1976d2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.05em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 16px;
+        }
+        
+        .submit-btn:hover {
+            background: #1565c0;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(25, 118, 210, 0.3);
+        }
+        
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+            font-size: 0.9em;
+            border-left: 3px solid #c62828;
+        }
+        
+        .trust-indicators {
+            margin-top: 60px;
+            padding-top: 40px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .trust-row {
+            display: flex;
+            gap: 48px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .trust-item {
+            text-align: center;
+            color: #757575;
+            font-size: 0.85em;
+        }
+        
+        .trust-item strong {
+            display: block;
+            font-size: 1.4em;
+            color: #1976d2;
+            margin-bottom: 4px;
+        }
+        
+        @media (max-width: 968px) {
+            .hero-container {
+                grid-template-columns: 1fr;
+                gap: 48px;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.4em;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-container">
+        <div class="logo">Smart Portfolio Assistant</div>
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/my-portfolio">My Portfolio</a>
+            <a href="/watchlist">Watchlist</a>
+        </div>
+    </div>
+</nav>
+
+<!-- HERO SECTION -->
+<div class="hero-container">
+    
+    <!-- LEFT: Content -->
+    <div class="hero-content">
+        <h1>Invest smarter with AI-powered insights</h1>
+        <p>Get personalized portfolio recommendations based on machine learning analysis of market data, risk profiles, and historical performance.</p>
+        
+        <ul class="features-list">
+            <li>
+                <span class="check-icon"></span>
+                <span>Machine learning predicts sector returns with high accuracy</span>
+            </li>
+            <li>
+                <span class="check-icon"></span>
+                <span>Diversified portfolios balanced for your risk tolerance</span>
+            </li>
+            <li>
+                <span class="check-icon"></span>
+                <span>Real-time market data from Yahoo Finance</span>
+            </li>
+            <li>
+                <span class="check-icon"></span>
+                <span>Stress-tested portfolios with scenario analysis</span>
+            </li>
+        </ul>
+    </div>
+    
+    <!-- RIGHT: Form -->
+    <div class="form-card">
+        <h2>Get started</h2>
+        
+        <form method="POST" action="/">
+            {% if error %}
+            <div class="error-message">{{ error }}</div>
+            {% endif %}
+            
+            <div class="form-group">
+                <label for="name">Full Name</label>
+                <input 
+                    type="text" 
+                    id="name" 
+                    name="name" 
+                    placeholder="Enter your name"
+                    required>
+            </div>
+            
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input 
+                    type="number" 
+                    id="age" 
+                    name="age" 
+                    placeholder="30"
+                    min="18" 
+                    max="100"
+                    required>
+            </div>
+            
+            <div class="form-group">
+                <label for="investment_amount">Investment Amount (₹)</label>
+                <input 
+                    type="number" 
+                    id="investment_amount" 
+                    name="investment_amount" 
+                    placeholder="100000"
+                    min="10000"
+                    step="1000"
+                    required>
+            </div>
+            
+            <div class="form-group">
+                <label for="risk_appetite">Risk Tolerance</label>
+                <select id="risk_appetite" name="risk_appetite" required>
+                    <option value="">Select your risk tolerance</option>
+                    <option value="Low">Conservative - Prioritize stability</option>
+                    <option value="Medium">Moderate - Balanced approach</option>
+                    <option value="High">Aggressive - Maximize growth potential</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="time_horizon">Investment Period (Years)</label>
+                <input 
+                    type="number" 
+                    id="time_horizon" 
+                    name="time_horizon" 
+                    placeholder="5"
+                    min="1" 
+                    max="30"
+                    required>
+            </div>
+            
+            <button type="submit" class="submit-btn">Create My Portfolio</button>
+        </form>
+    </div>
+    
+</div>
+
+<!-- TRUST INDICATORS -->
+<div class="hero-container">
+    <div class="trust-indicators" style="grid-column: 1 / -1;">
+        <div class="trust-row">
+            <div class="trust-item">
+                <strong>Random Forest</strong>
+                ML Algorithm
+            </div>
+            <div class="trust-item">
+                <strong>6-8 Sectors</strong>
+                Diversification
+            </div>
+            <div class="trust-item">
+                <strong>Live Data</strong>
+                Yahoo Finance
+            </div>
+            <div class="trust-item">
+                <strong>Free</strong>
+                No Hidden Costs
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

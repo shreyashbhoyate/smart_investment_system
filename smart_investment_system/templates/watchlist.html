@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sector Watchlist — Smart Portfolio Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.plot.ly/plotly-2.20.0.min.js"></script>
+</head>
+<body>
+
+<!-- ================= NAVBAR ================= -->
+<nav class="navbar">
+    <div class="logo">📊 Smart Portfolio Assistant</div>
+    <div class="nav-links">
+        <a href="/">🏠 Home</a>
+        <a href="/my-portfolio" title="View your created portfolio">📊 My Portfolio</a>
+        <a href="/watchlist" class="active">👁️ Watchlist</a>
+    </div>
+</nav>
+
+<div class="container">
+
+    <!-- ===== HEADER ===== -->
+    <div class="watchlist-header">
+        <h1>📊 Live Sector Watchlist</h1>
+        <p>Real-time market data for all investment sectors</p>
+    </div>
+
+    <!-- ===== SEARCH & FILTER ===== -->
+    <div class="search-box">
+        <input 
+            type="text" 
+            id="sectorFilter" 
+            placeholder="🔍 Search sectors... (Type and press Enter)" 
+            onkeyup="filterSectors()"
+        >
+        <button onclick="clearFilter()" class="clear-btn">Clear</button>
+    </div>
+
+    <!-- ===== NO DATA MESSAGE ===== -->
+    {% if not sectors %}
+    <div class="card" style="padding:24px; margin:20px 0; background:#fef5e7; border-left:4px solid #d68910;">
+        <strong>⚠ No sector data available</strong><br>
+        Try refreshing the page or check your data connection.
+    </div>
+    {% endif %}
+
+    <!-- ===== ALL SECTORS GRID (TOP) ===== -->
+    {% if sectors %}
+    <div class="watchlist-section">
+        <h2 style="margin-bottom: 20px;">All Sectors (<span id="sectorCount">{{ sectors|length }}</span>)</h2>
+        <div class="sector-grid" id="sectorGrid">
+            {% for sector in sectors %}
+            <a href="/sector/{{ sector.sector|replace(' ', '%20') }}" class="sector-card" data-sector="{{ sector.sector }}">
+                <div class="sector-header">
+                    <h3>{{ sector.sector }}</h3>
+                    <span class="badge badge-{{ sector.risk_class|lower }}">{{ sector.risk_class }}</span>
+                </div>
+                
+                <div class="sector-metrics">
+                    <div class="metric-item">
+                        <span class="metric-label">Return</span>
+                        <span class="metric-value {% if sector.avg_return > 0 %}positive{% else %}negative{% endif %}">
+                            {% if sector.avg_return > 0 %}+{% endif %}{{ sector.avg_return }}%
+                        </span>
+                    </div>
+                    
+                    <div class="metric-item">
+                        <span class="metric-label">Volatility</span>
+                        <span class="metric-value">{{ sector.volatility }}%</span>
+                    </div>
+                    
+                    <div class="metric-item">
+                        <span class="metric-label">Risk Score</span>
+                        <span class="metric-value">{{ sector.risk_score }}/10</span>
+                    </div>
+                </div>
+
+                <div class="sector-trend">
+                    <span class="emoji">{{ '📈' if sector.avg_return > 0 else '📉' }}</span>
+                    <span>{{ sector.market_trend }}</span>
+                </div>
+
+                <div class="sector-footer">
+                    View Details →
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+        <div id="noResults" style="display:none; padding:20px; text-align:center; color:#94a3b8;">
+            No sectors match your search. Try different keywords.
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ===== VISUALIZATIONS (BELOW) ===== -->
+    {% if sectors %}
+    <div class="watchlist-section" style="margin-top: 60px; padding-top: 40px; border-top: 2px solid #e2e8f0;">
+        <h2 style="margin-bottom: 30px;">📊 Market Analysis</h2>
+        
+        <div class="grid-2">
+            <div class="card chart-card">
+                <h3>Risk vs Return Landscape</h3>
+                {{ graph_overview|safe }}
+            </div>
+
+            <div class="card chart-card">
+                <h3>Annual Returns by Sector</h3>
+                {{ graph_returns|safe }}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<style>
+    .watchlist-header {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .watchlist-header h1 {
+        font-size: 32px;
+        margin-bottom: 8px;
+        color: #1f2933;
+    }
+
+    .watchlist-header p {
+        font-size: 16px;
+        color: #64748b;
+    }
+
+    .search-box {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 30px;
+    }
+
+    .search-box input {
+        flex: 1;
+        padding: 12px 16px;
+        border: 2px solid #e2e8f0;
+        border-radius: 10px;
+        font-size: 14px;
+        transition: border-color 0.3s ease;
+    }
+
+    .search-box input:focus {
+        outline: none;
+        border-color: #22c55e;
+        box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.1);
+    }
+
+    .clear-btn {
+        padding: 12px 20px;
+        background: #f1f5f9;
+        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        color: #475569;
+        transition: all 0.3s ease;
+    }
+
+    .clear-btn:hover {
+        background: #e2e8f0;
+    }
+
+    .watchlist-section {
+        margin-bottom: 40px;
+    }
+
+    .sector-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: 18px;
+        margin-top: 20px;
+    }
+
+    .sector-card {
+        display: block;
+        background: white;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        text-decoration: none;
+        color: inherit;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        border: 2px solid transparent;
+    }
+
+    .sector-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(0,0,0,0.12);
+        border-color: #22c55e;
+    }
+
+    .sector-card.hidden {
+        display: none;
+    }
+
+    .sector-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+    }
+
+    .sector-header h3 {
+        font-size: 18px;
+        margin: 0;
+        font-weight: 600;
+    }
+
+    .sector-metrics {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 15px 0;
+        padding: 12px 0;
+        border-top: 1px solid #e2e8f0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .metric-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .metric-label {
+        font-size: 11px;
+        color: #94a3b8;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 4px;
+        font-weight: 600;
+    }
+
+    .metric-value {
+        font-size: 16px;
+        font-weight: 700;
+        color: #1f2933;
+    }
+
+    .metric-value.positive {
+        color: #16a34a;
+    }
+
+    .metric-value.negative {
+        color: #dc2626;
+    }
+
+    .sector-trend {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin: 12px 0;
+        font-size: 13px;
+        color: #64748b;
+    }
+
+    .sector-trend .emoji {
+        font-size: 18px;
+    }
+
+    .sector-footer {
+        font-size: 12px;
+        color: #22c55e;
+        font-weight: 600;
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    .badge {
+        font-size: 11px;
+        padding: 4px 10px;
+        border-radius: 12px;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.5px;
+    }
+
+    .badge-low {
+        background: #e8f8f5;
+        color: #16a085;
+    }
+
+    .badge-medium {
+        background: #fef5e7;
+        color: #d68910;
+    }
+
+    .badge-high {
+        background: #fdecea;
+        color: #c0392b;
+    }
+
+    .chart-card {
+        background: white;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+
+    .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+        gap: 20px;
+    }
+
+    @media (max-width: 900px) {
+        .sector-grid {
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        }
+
+        .grid-2 {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<script>
+    // Debounce search to prevent excessive filtering
+    let filterTimeout;
+    function filterSectors() {
+        clearTimeout(filterTimeout);
+        filterTimeout = setTimeout(() => {
+            const input = document.getElementById("sectorFilter").value.toLowerCase();
+            const cards = document.querySelectorAll(".sector-card");
+            let visibleCount = 0;
+
+            cards.forEach(card => {
+                const sectorName = card.getAttribute("data-sector").toLowerCase();
+                
+                if (sectorName.includes(input)) {
+                    card.classList.remove("hidden");
+                    visibleCount++;
+                } else {
+                    card.classList.add("hidden");
+                }
+            });
+
+            // Show/hide no results message
+            const noResults = document.getElementById("noResults");
+            if (visibleCount === 0 && input.length > 0) {
+                noResults.style.display = "block";
+            } else {
+                noResults.style.display = "none";
+            }
+
+            // Update counter
+            document.getElementById("sectorCount").textContent = visibleCount;
+        }, 150); // 150ms debounce
+    }
+
+    function clearFilter() {
+        document.getElementById("sectorFilter").value = "";
+        clearTimeout(filterTimeout);
+        const input = document.getElementById("sectorFilter").value;
+        const cards = document.querySelectorAll(".sector-card");
+        cards.forEach(card => card.classList.remove("hidden"));
+        document.getElementById("noResults").style.display = "none";
+        document.getElementById("sectorCount").textContent = cards.length;
+    }
+
+    // Lazy load chart data when section becomes visible
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && entry.target.querySelector('.js-plotly-plot')) {
+                // Chart is visible, Plotly will render automatically
+                // No additional action needed
+            }
+        });
+    }, { threshold: 0.1 });
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const chartsSection = document.querySelector('.grid-2');
+        if (chartsSection) {
+            observer.observe(chartsSection);
+        }
+
+        // Keyboard Enter support
+        const searchInput = document.getElementById("sectorFilter");
+        if (searchInput) {
+            searchInput.addEventListener("keypress", (e) => {
+                if (e.key === "Enter") {
+                    filterSectors();
+                }
+            });
+        }
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,584 @@
+/* =========================================================
+   GLOBAL RESET & BASE
+========================================================= */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #f4f7fb;
+    font-family: "Inter", "Segoe UI", sans-serif;
+    color: #1f2933;
+}
+
+.container {
+    max-width: 1440px;   /* bigger dashboard */
+    margin: 0 auto;
+    padding: 32px;
+}
+
+
+
+/* =========================================================
+   NAVBAR
+========================================================= */
+.navbar {
+    background: #1f2d3d;
+    color: #ffffff;
+    padding: 14px 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navbar .logo {
+    font-weight: 600;
+    font-size: 18px;
+}
+
+.nav-links a {
+    color: #cbd5e1;
+    text-decoration: none;
+    margin-left: 20px;
+    font-size: 14px;
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+    color: #22c55e;
+}
+
+/* =========================================================
+   LAYOUT GRIDS
+========================================================= */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: stretch;
+    margin-bottom: 24px;
+}
+
+.grid-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+/* =========================================================
+   CARDS
+========================================================= */
+.card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 20px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.06);
+}
+
+.card h3 {
+    margin-bottom: 16px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.chart-card {
+    min-height: 420px;
+}
+
+/* =========================================================
+   PROFILE CARD
+========================================================= */
+.profile-header {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: #e0f2fe;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+}
+
+.stat-box {
+    background: #f8fafc;
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.stat-box span {
+    display: block;
+    font-size: 13px;
+    color: #64748b;
+}
+
+.stat-box strong {
+    font-size: 16px;
+    margin-top: 4px;
+}
+
+/* =========================================================
+   BADGES
+========================================================= */
+.badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+.badge-low {
+    background: #e6f7f1;
+    color: #047857;
+}
+
+.badge-medium {
+    background: #fff7e6;
+    color: #b45309;
+}
+
+.badge-high {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+/* =========================================================
+   PORTFOLIO HEALTH
+========================================================= */
+.portfolio-health {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    padding-top: 14px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.portfolio-health h4 {
+    margin-bottom: 6px;
+}
+
+.portfolio-health p {
+    font-size: 14px;
+    color: #475569;
+}
+
+.health-score-box {
+    background: #e6f7f1;
+    color: #047857;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* =========================================================
+   TABLES
+========================================================= */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    background: #1f2d3d;
+    color: #ffffff;
+    padding: 12px;
+    font-size: 14px;
+    text-align: left;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #e5e7eb;
+    font-size: 14px;
+}
+
+tr:hover {
+    background: #f8fafc;
+}
+
+/* =========================================================
+   LISTS
+========================================================= */
+ul {
+    padding-left: 20px;
+}
+
+li {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+section {
+    margin-bottom: 40px;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+@media (max-width: 900px) {
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .grid-3 {
+        grid-template-columns: 1fr;
+    }
+}
+
+.dashboard-section {
+    display: none;
+}
+
+.dashboard-section.active {
+    display: block;
+}
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Inter", system-ui, sans-serif;
+}
+
+/* BACKGROUND */
+.landing-body {
+    height: 100vh;
+    background: linear-gradient(135deg, #020617, #0f172a);
+}
+
+/* MAIN GRID */
+.landing-wrapper {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    height: 100vh;
+}
+
+/* HERO SECTION */
+.hero-section {
+    color: #e5e7eb;
+    padding: 70px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.hero-icon {
+    font-size: 48px;
+}
+
+.hero-brand h1 {
+    font-size: 40px;
+    margin-top: 10px;
+}
+
+.hero-tagline {
+    margin-top: 12px;
+    font-size: 16px;
+    color: #94a3b8;
+    max-width: 480px;
+}
+
+.hero-points {
+    margin-top: 50px;
+    list-style: none;
+}
+
+.hero-points li {
+    margin-bottom: 16px;
+    font-size: 15px;
+    color: #cbd5f5;
+}
+
+.hero-footer {
+    font-size: 13px;
+    color: #64748b;
+}
+
+/* FORM SECTION */
+.form-section {
+    background: #f8fafc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-card {
+    background: white;
+    padding: 40px;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 16px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+
+.profile-card h2 {
+    font-size: 24px;
+    margin-bottom: 6px;
+}
+
+.subtitle {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 24px;
+}
+
+.form-error {
+    background: #fee2e2;
+    color: #dc2626;
+    padding: 12px 14px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    font-size: 13px;
+    border-left: 4px solid #dc2626;
+}
+
+.profile-card input,
+.profile-card select {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 14px;
+    border-radius: 10px;
+    border: 1px solid #cbd5e1;
+    font-size: 14px;
+}
+
+.profile-card input:focus,
+.profile-card select:focus {
+    outline: none;
+    border-color: #22c55e;
+}
+
+.profile-card button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.profile-card button:hover {
+    opacity: 0.9;
+}
+
+/* MOBILE */
+@media (max-width: 900px) {
+    .landing-wrapper {
+        grid-template-columns: 1fr;
+    }
+
+    .hero-section {
+        display: none;
+    }
+}
+
+
+/* =========================================================
+   ✨ VISIBILITY & BORDER IMPROVEMENTS
+   Added for better sector card differentiation and readability
+========================================================= */
+
+/* Better background - less pure white */
+body {
+    background: #f0f4f8 !important;
+}
+
+/* Investment/Sector Cards - Clear borders and color coding */
+.investment-card {
+    background: white;
+    border: 2px solid #d1d5db !important;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08) !important;
+    transition: all 0.3s ease;
+}
+
+.investment-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.12) !important;
+    border-color: #9ca3af !important;
+}
+
+/* Color-coded left borders for risk levels */
+.investment-card.low-risk {
+    border-left: 6px solid #10b981 !important;
+}
+
+.investment-card.medium-risk {
+    border-left: 6px solid #f59e0b !important;
+}
+
+.investment-card.high-risk {
+    border-left: 6px solid #ef4444 !important;
+}
+
+/* Sector header improvements */
+.sector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 16px;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+.sector-name {
+    font-size: 1.3em;
+    font-weight: 700 !important;
+    color: #111827 !important;
+}
+
+.sector-amount {
+    font-size: 1.6em;
+    font-weight: 800 !important;
+    color: #1e40af !important;
+}
+
+/* Detail items - boxed stats with borders */
+.sector-details {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 16px;
+}
+
+.detail-item {
+    text-align: center;
+    padding: 14px;
+    background: #f8fafc !important;
+    border-radius: 8px;
+    border: 1.5px solid #e2e8f0 !important;
+}
+
+.detail-label {
+    font-size: 0.85em;
+    color: #64748b !important;
+    margin-bottom: 6px;
+    font-weight: 600 !important;
+}
+
+.detail-value {
+    font-size: 1.15em;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+}
+
+.detail-value.positive {
+    color: #059669 !important;
+}
+
+/* Risk badges - better visibility with borders */
+.risk-badge {
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 700 !important;
+    border: 1.5px solid !important;
+}
+
+.risk-badge.low {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #10b981 !important;
+}
+
+.risk-badge.medium {
+    background: #fed7aa;
+    color: #92400e;
+    border-color: #f59e0b !important;
+}
+
+.risk-badge.high {
+    background: #fecaca;
+    color: #991b1b;
+    border-color: #ef4444 !important;
+}
+
+/* Metric boxes - better text visibility on gradients */
+.metric-box {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+}
+
+.metric-box .metric-label,
+.metric-box .metric-value,
+.metric-box .metric-sub {
+    text-shadow: 0 1px 3px rgba(0,0,0,0.25) !important;
+}
+
+.metric-value {
+    font-weight: 800 !important;
+}
+
+/* Insight boxes - better borders */
+.insight-box {
+    background: #f8fafc;
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 14px;
+    border: 1.5px solid #cbd5e1 !important;
+    border-left: 4px solid #3b82f6 !important;
+}
+
+/* Section headings - bolder */
+h2, h3 {
+    color: #0f172a !important;
+    font-weight: 700 !important;
+}
+
+/* Cards - subtle border */
+.card {
+    border: 1px solid #e5e7eb !important;
+}
+
+/* Summary card - better definition */
+.summary-card {
+    background: white;
+    border: 1px solid #d1d5db !important;
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+/* Tables - better contrast */
+table {
+    border: 1px solid #d1d5db;
+}
+
+th {
+    background: #1f2937 !important;
+    font-weight: 600 !important;
+}
+
+td {
+    color: #1f2933 !important;
+    border-bottom: 1px solid #e5e7eb !important;
+}
+
+/* Recommendations box - warmer yellow */
+.recommendations {
+    background: #fef3c7 !important;
+    border: 2px solid #f59e0b !important;
+}
+
